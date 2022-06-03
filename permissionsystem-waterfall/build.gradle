@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    api project(':pluginname-common')
+    api project(':permissionsystem-common')
     compileOnly 'io.github.waterfallmc:waterfall-api:1.18-R0.1-SNAPSHOT'
 }
 
@@ -30,7 +30,7 @@ processResources {
 
 shadowJar {
     dependencies {
-        include(dependency(':pluginname-common'))
+        include(dependency(':permissionsystem-common'))
     }
 }
 

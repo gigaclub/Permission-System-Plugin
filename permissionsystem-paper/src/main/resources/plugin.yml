@@ -1,6 +1,6 @@
-name: Pluginname
+name: PermissionSystem
 version: '${version}'
-main: net.gigaclub.pluginname.Main
+main: net.gigaclub.permissionsystem.Main
 api-version: 1.18
 prefix: GigaClub
 load: POSTWORLD
