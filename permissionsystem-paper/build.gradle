@@ -11,11 +11,30 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    maven {
+        name = "cloudnet-releases"
+        url = uri("https://repo.cloudnetservice.eu/repository/releases/")
+    }
+    maven {
+        name = "translationapi"
+        url = uri("https://maven.pkg.github.com/gigaclub/translationapi")
+        metadataSources {
+            mavenPom()
+            artifact()
+        }
+        credentials {
+            username = GITHUB_PACKAGES_USERID
+            password = GITHUB_PACKAGES_IMPORT_TOKEN
+        }
+    }
 }
 
 dependencies {
     api project(':permissionsystem-common')
     compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
+    implementation("de.dytanic.cloudnet:cloudnet-cloudperms:3.4.3-RELEASE")
+    implementation("de.dytanic.cloudnet:cloudnet-driver:3.4.3-RELEASE")
+    api("net.gigaclub:translationapi:14.0.1.0.5")
 }
 
 processResources {
