@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 
@@ -32,7 +33,7 @@ public final class Main extends JavaPlugin {
                 config.getString("Odoo.Username"),
                 config.getString("Odoo.Password")
         ));
-        translation.setCategory("translation");
+        translation.setCategory("permissionsystem");
 
         setPermissionSystem(new PermissionSystem(
                 config.getString("Odoo.Host"),
@@ -41,7 +42,14 @@ public final class Main extends JavaPlugin {
                 config.getString("Odoo.Password")
         ));
 
+        IPermissionManagement permissionManagement = CloudNetDriver.getInstance().getPermissionManagement();
+
         JSONArray groups = Main.getPermissionSystem().getAllGroups();
+        for (int i = 0; i < groups.length(); i++) {
+            JSONObject group = groups.getJSONObject(i);
+            String groupName = group.getString("name");
+            permissionManagement.addGroup(groupName, 0);
+        }
 
     }
 

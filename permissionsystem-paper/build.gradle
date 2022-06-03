@@ -54,6 +54,7 @@ processResources {
 shadowJar {
     dependencies {
         include(dependency(':permissionsystem-common'))
+        include(dependency("net.gigaclub:permissionsystemapi:14.0.1.0.0"))
     }
 }
 
