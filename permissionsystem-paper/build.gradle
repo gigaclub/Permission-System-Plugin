@@ -27,6 +27,9 @@ repositories {
             password = GITHUB_PACKAGES_IMPORT_TOKEN
         }
     }
+    flatDir {
+        dirs '/home/kevin/Development/JavaAPI/PermissionSystemAPI/build/libs'
+    }
 }
 
 dependencies {
@@ -35,6 +38,7 @@ dependencies {
     implementation("de.dytanic.cloudnet:cloudnet-cloudperms:3.4.3-RELEASE")
     implementation("de.dytanic.cloudnet:cloudnet-driver:3.4.3-RELEASE")
     api("net.gigaclub:translationapi:14.0.1.0.5")
+    api("net.gigaclub:permissionsystemapi:14.0.1.0.0")
 }
 
 processResources {
