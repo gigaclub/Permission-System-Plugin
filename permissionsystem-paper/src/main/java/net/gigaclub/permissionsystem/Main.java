@@ -48,7 +48,13 @@ public final class Main extends JavaPlugin {
         for (int i = 0; i < groups.length(); i++) {
             JSONObject group = groups.getJSONObject(i);
             String groupName = group.getString("name");
+            JSONArray permissions = group.getJSONArray("permissions");
             permissionManagement.addGroup(groupName, 0);
+            permissionManagement.modifyGroup(groupName, permissionGroup -> {
+                for (int j = 0; j < permissions.length(); j++) {
+                    permissionGroup.addPermission(permissions.getString(j));
+                }
+            });
         }
 
     }
