@@ -1,6 +1,7 @@
 package net.gigaclub.permissionsystem;
 
 import de.dytanic.cloudnet.driver.permission.IPermissionManagement;
+import net.gigaclub.permissionsystem.commands.GroupCommand;
 import net.gigaclub.permissionsystem.commands.SyncCommand;
 import net.gigaclub.permissionsystemapi.PermissionSystem;
 import net.gigaclub.translation.Translation;
@@ -98,6 +99,7 @@ public final class Main extends JavaPlugin {
 
     public void registerCommands() {
         Objects.requireNonNull(getCommand("syncgroups")).setExecutor(new SyncCommand());
+        Objects.requireNonNull(getCommand("group")).setExecutor(new GroupCommand());
     }
 
 }

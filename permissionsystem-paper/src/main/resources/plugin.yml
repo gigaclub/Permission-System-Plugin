@@ -11,3 +11,5 @@ website: https://github.com/GigaClub
 commands:
   syncgroups:
     description: /syncgroups
+  group:
+    description: /group <list|add|remove> <group> <playerName>
