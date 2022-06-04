@@ -1,6 +1,7 @@
 package net.gigaclub.permissionsystem;
 
 import de.dytanic.cloudnet.driver.permission.IPermissionManagement;
+import net.gigaclub.permissionsystem.commands.SyncCommand;
 import net.gigaclub.permissionsystemapi.PermissionSystem;
 import net.gigaclub.translation.Translation;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Objects;
 
 public final class Main extends JavaPlugin {
 
@@ -42,20 +44,9 @@ public final class Main extends JavaPlugin {
                 config.getString("Odoo.Password")
         ));
 
-        IPermissionManagement permissionManagement = CloudNetDriver.getInstance().getPermissionManagement();
+        Main.setupGroups();
 
-        JSONArray groups = Main.getPermissionSystem().getAllGroups();
-        for (int i = 0; i < groups.length(); i++) {
-            JSONObject group = groups.getJSONObject(i);
-            String groupName = group.getString("name");
-            JSONArray permissions = group.getJSONArray("permissions");
-            permissionManagement.addGroup(groupName, 0);
-            permissionManagement.modifyGroup(groupName, permissionGroup -> {
-                for (int j = 0; j < permissions.length(); j++) {
-                    permissionGroup.addPermission(permissions.getString(j));
-                }
-            });
-        }
+        this.registerCommands();
 
     }
 
@@ -86,6 +77,27 @@ public final class Main extends JavaPlugin {
 
     public static void setPermissionSystem(PermissionSystem permissionSystem) {
         Main.permissionSystem = permissionSystem;
+    }
+
+    public static void setupGroups() {
+        IPermissionManagement permissionManagement = CloudNetDriver.getInstance().getPermissionManagement();
+
+        JSONArray groups = Main.getPermissionSystem().getAllGroups();
+        for (int i = 0; i < groups.length(); i++) {
+            JSONObject group = groups.getJSONObject(i);
+            String groupName = group.getString("name");
+            JSONArray permissions = group.getJSONArray("permissions");
+            permissionManagement.addGroup(groupName, 0);
+            permissionManagement.modifyGroup(groupName, permissionGroup -> {
+                for (int j = 0; j < permissions.length(); j++) {
+                    permissionGroup.addPermission(permissions.getString(j));
+                }
+            });
+        }
+    }
+
+    public void registerCommands() {
+        Objects.requireNonNull(getCommand("syncgroups")).setExecutor(new SyncCommand());
     }
 
 }
