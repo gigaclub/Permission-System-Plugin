@@ -1,12 +1,15 @@
 package net.gigaclub.permissionsystem;
 
 import de.dytanic.cloudnet.driver.permission.IPermissionManagement;
+import de.dytanic.cloudnet.driver.permission.PermissionUserGroupInfo;
 import net.gigaclub.permissionsystem.commands.GroupCommand;
 import net.gigaclub.permissionsystem.commands.SyncCommand;
 import net.gigaclub.permissionsystemapi.PermissionSystem;
 import net.gigaclub.translation.Translation;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.dytanic.cloudnet.driver.CloudNetDriver;
@@ -14,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Objects;
 
 public final class Main extends JavaPlugin {
@@ -82,8 +86,9 @@ public final class Main extends JavaPlugin {
 
     public static void setupGroups() {
         IPermissionManagement permissionManagement = CloudNetDriver.getInstance().getPermissionManagement();
+        PermissionSystem permissionSystem = Main.getPermissionSystem();
 
-        JSONArray groups = Main.getPermissionSystem().getAllGroups();
+        JSONArray groups = permissionSystem.getAllGroups();
         for (int i = 0; i < groups.length(); i++) {
             JSONObject group = groups.getJSONObject(i);
             String groupName = group.getString("name");
@@ -95,6 +100,23 @@ public final class Main extends JavaPlugin {
                 }
             });
         }
+
+        Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);
+        for (Player player : players) {
+            JSONArray groupsOfPlayer = permissionSystem.getGroups(player.getUniqueId().toString());
+            permissionManagement.modifyUser(player.getUniqueId(), user -> {
+                Collection<PermissionUserGroupInfo> groupsOfUser = user.getGroups();
+                for (PermissionUserGroupInfo group : groupsOfUser) {
+                    user.removeGroup(group.getGroup());
+                }
+                for (int i = 0; i < groupsOfPlayer.length(); i++) {
+                    JSONObject group = groups.getJSONObject(i);
+                    String groupName = group.getString("name");
+                    user.addGroup(groupName);
+                }
+            });
+        }
+
     }
 
     public void registerCommands() {
