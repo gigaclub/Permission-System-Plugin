@@ -110,7 +110,7 @@ public final class Main extends JavaPlugin {
                     user.removeGroup(group.getGroup());
                 }
                 for (int i = 0; i < groupsOfPlayer.length(); i++) {
-                    JSONObject group = groups.getJSONObject(i);
+                    JSONObject group = groupsOfPlayer.getJSONObject(i);
                     String groupName = group.getString("name");
                     user.addGroup(groupName);
                 }
