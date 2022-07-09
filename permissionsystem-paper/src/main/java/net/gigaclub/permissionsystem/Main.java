@@ -38,7 +38,8 @@ public final class Main extends JavaPlugin {
                 config.getString("Odoo.Host"),
                 config.getString("Odoo.Database"),
                 config.getString("Odoo.Username"),
-                config.getString("Odoo.Password")
+                config.getString("Odoo.Password"),
+                getPlugin()
         ));
         translation.setCategory("permissionsystem");
 
@@ -100,12 +101,13 @@ public final class Main extends JavaPlugin {
                 }
             });
         }
-
+        //grepper minecraft paper get a list of all online players
         Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);
+        //end grepper
         for (Player player : players) {
             JSONArray groupsOfPlayer = permissionSystem.getGroups(player.getUniqueId().toString());
             permissionManagement.modifyUser(player.getUniqueId(), user -> {
-                Collection<PermissionUserGroupInfo> groupsOfUser = user.getGroups();
+                PermissionUserGroupInfo[] groupsOfUser = user.getGroups().toArray(new PermissionUserGroupInfo[0]);
                 for (PermissionUserGroupInfo group : groupsOfUser) {
                     user.removeGroup(group.getGroup());
                 }
@@ -120,8 +122,10 @@ public final class Main extends JavaPlugin {
     }
 
     public void registerCommands() {
+        //grepper minecraft paper register commands
         Objects.requireNonNull(getCommand("syncgroups")).setExecutor(new SyncCommand());
         Objects.requireNonNull(getCommand("group")).setExecutor(new GroupCommand());
+        //end grepper
     }
 
 }

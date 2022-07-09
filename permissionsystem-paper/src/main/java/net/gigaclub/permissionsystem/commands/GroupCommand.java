@@ -18,12 +18,13 @@ import java.util.Arrays;
 public class GroupCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        //grepper minecraft paper get player by sender
         Player player = (Player) sender;
-        String playerUUID = player.getUniqueId().toString();
+        //end grepper
         Translation t = Main.getTranslation();
 
         if (args.length == 0) {
-            sender.sendMessage(t.t("group.no.parameters", playerUUID));
+            t.sendMessage("group.no.parameters", player);
             return true;
         }
         PermissionSystem permissionSystem = Main.getPermissionSystem();
@@ -39,12 +40,14 @@ public class GroupCommand implements CommandExecutor {
                 break;
             case "add":
                 if (args.length < 3) {
-                    sender.sendMessage(t.t("group.add.no.parameters", playerUUID));
+                    t.sendMessage("group.add.no.parameters", player);
                     return true;
                 }
                 String groupName = args[1].toLowerCase();
                 String playerName = args[2];
+                //grepper minecraft paper get player by name
                 Player playerToAdd = Bukkit.getPlayer(playerName);
+                //end grepper
                 int groupId = 0;
                 for (int i = 0; i < groups.length(); i++) {
                     JSONObject group = groups.getJSONObject(i);
@@ -56,11 +59,11 @@ public class GroupCommand implements CommandExecutor {
                 assert playerToAdd != null;
                 permissionSystem.setGroups(playerToAdd.getUniqueId().toString(), Arrays.asList(groupId));
                 Main.setupGroups();
-                sender.sendMessage(t.t("group.add.success", playerUUID));
+                t.sendMessage("group.add.success", player);
                 break;
             case "remove":
                 if (args.length < 3) {
-                    sender.sendMessage(t.t("group.remove.no.parameters", playerUUID));
+                    t.sendMessage("group.remove.no.parameters", player);
                     return true;
                 }
                 String groupNameToRemove = args[1].toLowerCase();
@@ -77,7 +80,7 @@ public class GroupCommand implements CommandExecutor {
                 assert playerToRemove != null;
                 permissionSystem.removeGroups(playerToRemove.getUniqueId().toString(), Arrays.asList(groupId));
                 Main.setupGroups();
-                sender.sendMessage(t.t("group.remove.success", playerUUID));
+                t.sendMessage("group.remove.success", player);
                 break;
         }
         return true;

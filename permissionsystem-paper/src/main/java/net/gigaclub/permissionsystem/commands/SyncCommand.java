@@ -12,11 +12,10 @@ public class SyncCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        String playerUUID = player.getUniqueId().toString();
         Translation t = Main.getTranslation();
 
         Main.setupGroups();
-        sender.sendMessage(t.t("sync.success", playerUUID));
+        t.sendMessage("sync.success", player);
         return true;
     }
 }
