@@ -1,5 +1,5 @@
 name: PermissionSystem
-version: '${version}'
+version: 1.19.0.1.0.0
 main: net.gigaclub.permissionsystem.Main
 api-version: 1.18
 prefix: PermissionSystem
