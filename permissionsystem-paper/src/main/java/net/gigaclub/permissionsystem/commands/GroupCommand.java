@@ -8,14 +8,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class GroupCommand implements CommandExecutor {
+public class GroupCommand implements CommandExecutor, TabCompleter {
+    Translation t = Main.getTranslation();
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         //grepper minecraft paper get player by sender
@@ -35,7 +40,12 @@ public class GroupCommand implements CommandExecutor {
                 for (int i = 0; i < groups.length(); i++) {
                     JSONObject group = groups.getJSONObject(i);
                     String groupName = group.getString("name");
+                    JSONArray permissions = group.getJSONArray("permissions");
                     sender.sendMessage(groupName);
+                    for (int j = 0; j < permissions.length(); j++) {
+                        sender.sendMessage(permissions.getString(j));
+                    }
+                    sender.sendMessage("______________________");
                 }
                 break;
             case "add":
@@ -84,5 +94,30 @@ public class GroupCommand implements CommandExecutor {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        PermissionSystem permissionSystem = Main.getPermissionSystem();
+        JSONArray groups = permissionSystem.getAllGroups();
+
+        if (args.length == 1) {
+            List<String> arguments = new ArrayList<>();
+            arguments.add("set");
+            arguments.add("remove");
+            arguments.add("list");
+            return arguments;
+        } else if (args.length == 2) {
+            if (args[0].equals("set") || args[0].equals("remove")) {
+                List<String> arguments = new ArrayList<>();
+                for (int i = 0; i < groups.length(); i++) {
+                    JSONObject group = groups.getJSONObject(i);
+                    String groupName = group.getString("name");
+                    arguments.add(groupName);
+                }
+                return arguments;
+            }
+        }
+        return null;
     }
 }

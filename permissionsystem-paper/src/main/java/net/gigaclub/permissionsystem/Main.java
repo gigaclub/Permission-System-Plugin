@@ -1,6 +1,7 @@
 package net.gigaclub.permissionsystem;
 
 import de.dytanic.cloudnet.driver.permission.IPermissionManagement;
+import de.dytanic.cloudnet.driver.permission.PermissionGroup;
 import de.dytanic.cloudnet.driver.permission.PermissionUserGroupInfo;
 import net.gigaclub.permissionsystem.commands.GroupCommand;
 import net.gigaclub.permissionsystem.commands.SyncCommand;
@@ -90,13 +91,27 @@ public final class Main extends JavaPlugin {
         PermissionSystem permissionSystem = Main.getPermissionSystem();
 
         JSONArray groups = permissionSystem.getAllGroups();
+        System.out.println(groups);
         for (int i = 0; i < groups.length(); i++) {
             JSONObject group = groups.getJSONObject(i);
             String groupName = group.getString("name");
             JSONArray permissions = group.getJSONArray("permissions");
+
+            String suffix = group.getString("suffix");
+            String prefix = group.getString("prefix");
+            String color = group.getString("color");
+            String display = group.getString("display");
+
             permissionManagement.addGroup(groupName, 0);
             permissionManagement.modifyGroup(groupName, permissionGroup -> {
+                permissionGroup.setSuffix(suffix);
+                permissionGroup.setPrefix(prefix);
+                permissionGroup.setColor(color);
+                permissionGroup.setDisplay(display);
                 for (int j = 0; j < permissions.length(); j++) {
+                    System.out.println("----------");
+                    System.out.println(groupName + " | " + permissions.getString(j) + " | " + permissionGroup.getPrefix() + permissionGroup.getName() + permissionGroup.getSuffix());
+                    System.out.println("----------");
                     permissionGroup.addPermission(permissions.getString(j));
                 }
             });
