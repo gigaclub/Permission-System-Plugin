@@ -1,6 +1,7 @@
 package net.gigaclub.permissionsystem;
 
 import de.dytanic.cloudnet.driver.permission.IPermissionManagement;
+import de.dytanic.cloudnet.driver.permission.PermissionGroup;
 import de.dytanic.cloudnet.driver.permission.PermissionUserGroupInfo;
 import net.gigaclub.permissionsystem.commands.GroupCommand;
 import net.gigaclub.permissionsystem.commands.SyncCommand;
@@ -17,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -53,6 +55,8 @@ public final class Main extends JavaPlugin {
         Main.setupGroups();
 
         this.registerCommands();
+
+        registerTranslations();
 
     }
 
@@ -94,8 +98,18 @@ public final class Main extends JavaPlugin {
             JSONObject group = groups.getJSONObject(i);
             String groupName = group.getString("name");
             JSONArray permissions = group.getJSONArray("permissions");
+
+            String suffix = group.getString("suffix");
+            String prefix = group.getString("prefix");
+            String color = group.getString("color");
+            String display = group.getString("display");
+
             permissionManagement.addGroup(groupName, 0);
             permissionManagement.modifyGroup(groupName, permissionGroup -> {
+                permissionGroup.setSuffix(suffix);
+                permissionGroup.setPrefix(prefix);
+                permissionGroup.setColor(color);
+                permissionGroup.setDisplay(display);
                 for (int j = 0; j < permissions.length(); j++) {
                     permissionGroup.addPermission(permissions.getString(j));
                 }
@@ -126,6 +140,17 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("syncgroups")).setExecutor(new SyncCommand());
         Objects.requireNonNull(getCommand("group")).setExecutor(new GroupCommand());
         //end grepper
+    }
+
+    public static void registerTranslations() {
+        Main.translation.registerTranslations(Arrays.asList(
+                "group.no.parameters",
+                "group.list",
+                "group.no.parameters",
+                "group.add.success",
+                "group.remove.success",
+                "group.sync.success"
+        ));
     }
 
 }
