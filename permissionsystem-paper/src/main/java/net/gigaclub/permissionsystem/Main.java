@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -55,6 +56,8 @@ public final class Main extends JavaPlugin {
 
         this.registerCommands();
 
+        registerTranslations();
+
     }
 
     @Override
@@ -91,7 +94,6 @@ public final class Main extends JavaPlugin {
         PermissionSystem permissionSystem = Main.getPermissionSystem();
 
         JSONArray groups = permissionSystem.getAllGroups();
-        System.out.println(groups);
         for (int i = 0; i < groups.length(); i++) {
             JSONObject group = groups.getJSONObject(i);
             String groupName = group.getString("name");
@@ -109,9 +111,6 @@ public final class Main extends JavaPlugin {
                 permissionGroup.setColor(color);
                 permissionGroup.setDisplay(display);
                 for (int j = 0; j < permissions.length(); j++) {
-                    System.out.println("----------");
-                    System.out.println(groupName + " | " + permissions.getString(j) + " | " + permissionGroup.getPrefix() + permissionGroup.getName() + permissionGroup.getSuffix());
-                    System.out.println("----------");
                     permissionGroup.addPermission(permissions.getString(j));
                 }
             });
@@ -141,6 +140,17 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("syncgroups")).setExecutor(new SyncCommand());
         Objects.requireNonNull(getCommand("group")).setExecutor(new GroupCommand());
         //end grepper
+    }
+
+    public static void registerTranslations() {
+        Main.translation.registerTranslations(Arrays.asList(
+                "group.no.parameters",
+                "group.list",
+                "group.no.parameters",
+                "group.add.success",
+                "group.remove.success",
+                "group.sync.success"
+        ));
     }
 
 }

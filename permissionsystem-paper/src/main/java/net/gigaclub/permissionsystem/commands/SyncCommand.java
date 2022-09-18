@@ -15,7 +15,7 @@ public class SyncCommand implements CommandExecutor {
         Translation t = Main.getTranslation();
 
         Main.setupGroups();
-        t.sendMessage("sync.success", player);
+        t.sendMessage("group.sync.success", player);
         return true;
     }
 }

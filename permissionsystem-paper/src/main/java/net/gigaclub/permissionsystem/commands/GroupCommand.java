@@ -1,5 +1,7 @@
 package net.gigaclub.permissionsystem.commands;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import net.gigaclub.permissionsystem.Main;
 import net.gigaclub.permissionsystemapi.PermissionSystem;
@@ -21,12 +23,16 @@ import java.util.List;
 
 public class GroupCommand implements CommandExecutor, TabCompleter {
     Translation t = Main.getTranslation();
+    Gson gson = new Gson();
+    JsonObject values;
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         //grepper minecraft paper get player by sender
         Player player = (Player) sender;
         //end grepper
         Translation t = Main.getTranslation();
+        JsonObject params;
 
         if (args.length == 0) {
             t.sendMessage("group.no.parameters", player);
@@ -37,20 +43,28 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
         switch (args[0]) {
             case "list":
                 // change after translation rework to support lists
+                t.sendMessage("group.list.group", player);
                 for (int i = 0; i < groups.length(); i++) {
                     JSONObject group = groups.getJSONObject(i);
                     String groupName = group.getString("name");
                     JSONArray permissions = group.getJSONArray("permissions");
-                    sender.sendMessage(groupName);
+                    params = new JsonObject();
+                    params.addProperty("group", groupName);
+                    values = new JsonObject();
+                    values.add("params", params);
+                    List<String> perms = new ArrayList<>();
                     for (int j = 0; j < permissions.length(); j++) {
-                        sender.sendMessage(permissions.getString(j));
+                        perms.add(permissions.getString(j));
                     }
-                    sender.sendMessage("______________________");
+                    JsonObject PerlmsList = new JsonObject();
+                    PerlmsList.add("perms", gson.toJsonTree(perms));
+                    values.add("list", PerlmsList);
+                    t.sendMessage("group.list", player, values);
                 }
                 break;
             case "add":
                 if (args.length < 3) {
-                    t.sendMessage("group.add.no.parameters", player);
+                    t.sendMessage("group.no.parameters", player);
                     return true;
                 }
                 String groupName = args[1].toLowerCase();
@@ -69,11 +83,17 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                 assert playerToAdd != null;
                 permissionSystem.setGroups(playerToAdd.getUniqueId().toString(), Arrays.asList(groupId));
                 Main.setupGroups();
-                t.sendMessage("group.add.success", player);
+                params = new JsonObject();
+                params.addProperty("playerName", playerName);
+                params.addProperty("groupName", groupName);
+                values = new JsonObject();
+                values.add("params", params);
+
+                t.sendMessage("group.add.success", player, values);
                 break;
             case "remove":
                 if (args.length < 3) {
-                    t.sendMessage("group.remove.no.parameters", player);
+                    t.sendMessage("group.no.parameters", player);
                     return true;
                 }
                 String groupNameToRemove = args[1].toLowerCase();
@@ -90,7 +110,12 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
                 assert playerToRemove != null;
                 permissionSystem.removeGroups(playerToRemove.getUniqueId().toString(), Arrays.asList(groupId));
                 Main.setupGroups();
-                t.sendMessage("group.remove.success", player);
+                params = new JsonObject();
+                params.addProperty("playerName", playerNameToRemove);
+                params.addProperty("groupName", groupNameToRemove);
+                values = new JsonObject();
+                values.add("params", params);
+                t.sendMessage("group.remove.success", player, values);
                 break;
         }
         return true;
@@ -103,12 +128,12 @@ public class GroupCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             List<String> arguments = new ArrayList<>();
-            arguments.add("set");
+            arguments.add("add");
             arguments.add("remove");
             arguments.add("list");
             return arguments;
         } else if (args.length == 2) {
-            if (args[0].equals("set") || args[0].equals("remove")) {
+            if (args[0].equals("add") || args[0].equals("remove")) {
                 List<String> arguments = new ArrayList<>();
                 for (int i = 0; i < groups.length(); i++) {
                     JSONObject group = groups.getJSONObject(i);
